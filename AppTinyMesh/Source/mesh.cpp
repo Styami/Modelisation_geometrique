@@ -23,7 +23,7 @@ Indices must have a size multiple of three (three for triangle vertices and thre
 \param vertices List of geometry vertices.
 \param indices List of indices wich represent the geometry triangles.
 */
-Mesh::Mesh(const std::vector<Vector>& vertices, const std::vector<int>& indices) :vertices(vertices), varray(indices)
+Mesh::Mesh(const std::vector<Vector>& vertices, const std::vector<int>& indices) :vertices(vertices), varray(indices), narray(indices)
 {
   normals.resize(vertices.size(), Vector::Z);
 }

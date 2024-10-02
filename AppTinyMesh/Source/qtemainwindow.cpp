@@ -1,3 +1,4 @@
+#include "AppTinyMesh/Source/bezier.hpp"
 #include "qte.h"
 #include "implicits.h"
 #include "ui_interface.h"
@@ -9,6 +10,14 @@ MainWindow::MainWindow() : QMainWindow(), uiw(new Ui::Assets)
 
 	// Chargement du GLWidget
 	meshWidget = new MeshWidget;
+
+	// QSurfaceFormat format;
+	// format.setDepthBufferSize(24);
+	// format.setStencilBufferSize(8);
+	// format.setVersion(4, 3);
+	// format.setProfile(QSurfaceFormat::CoreProfile);
+	// meshWidget->setFormat(format);
+
 	QGridLayout* GLlayout = new QGridLayout;
 	GLlayout->addWidget(meshWidget, 0, 0);
 	GLlayout->setContentsMargins(0, 0, 0, 0);
@@ -50,14 +59,15 @@ void MainWindow::editingSceneRight(const Ray&)
 
 void MainWindow::BoxMeshExample()
 {
-	Mesh boxMesh = Mesh(Box(1.0));
-
-	std::vector<Color> cols;
-	cols.resize(boxMesh.Vertexes());
+	// Mesh boxMesh = Mesh(Box(1.0));
+	Bezier bez(100, 100, 7, 7); //FIXME : Faire en sorte que le fonction soit templatée pour les points de contrôles
+	Mesh bezMesh = Mesh(bez.get_mesh());
+	std::vector<Color> cols(bezMesh.Vertexes());
+	// cols.resize(bezMesh.Vertexes());//boxMesh.Vertexes());
     for (size_t i = 0; i < cols.size(); i++)
 		cols[i] = Color(double(i) / 6.0, fmod(double(i) * 39.478378, 1.0), 0.0);
 
-	meshColor = MeshColor(boxMesh, cols, boxMesh.VertexIndexes());
+	meshColor = MeshColor(bezMesh, cols, bezMesh.VertexIndexes());
 	UpdateGeometry();
 }
 
