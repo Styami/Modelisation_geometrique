@@ -123,6 +123,8 @@ public:
 
   void Load(const QString&);
   void SaveObj(const QString&, const QString&) const;
+  inline const std::vector<Vector>& get_verticies() const;
+  inline const std::vector<Vector>& get_normals() const;
 protected:
   void AddTriangle(int, int, int, int);
   void AddSmoothTriangle(int, int, int, int, int, int);
@@ -235,3 +237,18 @@ inline Vector Mesh::operator[](int i) const
   return vertices[i];
 }
 
+/*!
+\brief Get all vertex.
+\return The array of vertex (as a 3D Vector).
+*/
+const std::vector<Vector>& Mesh::get_verticies() const {
+  return vertices;
+}
+
+/*!
+\brief Get all normal.
+\return The array of normal (as a 3D Vector).
+*/
+const std::vector<Vector>& Mesh::get_normals() const {
+  return normals;
+}

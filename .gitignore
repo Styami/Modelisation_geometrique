@@ -1,4 +1,5 @@
 .vs/
+.vscode/
 Out/
 Temp/
 AppTinyMesh/Source/realtime-moc.cpp
