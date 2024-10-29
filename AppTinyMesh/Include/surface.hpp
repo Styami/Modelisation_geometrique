@@ -1,12 +1,9 @@
 #ifndef __SURFACE__
 #define __SURFACE__
 
-
-#include "mathematics.h"
 #include "mesh.h"
 #include <array>
 #include <cstddef>
-#include <vector>
 
 //template<int W, int H>
 class Surface {
