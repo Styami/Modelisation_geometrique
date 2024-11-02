@@ -6,6 +6,7 @@
 class Mix: public BinaryExpr {
     public:
         Mix(const Node& _n1, const Node& _n2, const double r);
+        Mix(const Node* _n1, const Node* _n2, const double r);
         double value(const Vector& p) const override;
         Node* clone() const override;
     private:

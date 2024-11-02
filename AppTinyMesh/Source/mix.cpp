@@ -8,6 +8,11 @@ Mix::Mix(const Node& _n1, const Node& _n2, const double r) :
     mixRadius(r)
 {}
 
+Mix::Mix(const Node* _n1, const Node* _n2, const double r) :
+    BinaryExpr(_n1, _n2),
+    mixRadius(r)
+{}
+
 double Mix::offset(const double a, const double b) const {
     double h = std::max(mixRadius - std::abs(a - b), 0.0) / mixRadius;
     return mixRadius * h * h * h / 6;

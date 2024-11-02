@@ -14,7 +14,7 @@ class BinaryExpr : public Node {
             n1(_n1.clone()),
             n2(_n2.clone())
         {}
-        BinaryExpr(Node* _n1, Node* _n2) :
+        BinaryExpr(const Node* _n1, const Node* _n2) :
             n1(_n1->clone()),
             n2(_n2->clone())
         {}

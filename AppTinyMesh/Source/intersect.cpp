@@ -5,10 +5,9 @@ Intersect::Intersect(const Node& _n1, const Node& _n2) :
     BinaryExpr(_n1, _n2)
 {}
 
-Intersect::~Intersect() {
-    delete n1;
-    delete n2;
-}
+Intersect::Intersect(const Node* _n1, const Node* _n2) :
+    BinaryExpr(_n1, _n2)
+{}
 
 double Intersect::value(const Vector& p) const {
     return std::max(n1->value(p), -n2->value(p));
