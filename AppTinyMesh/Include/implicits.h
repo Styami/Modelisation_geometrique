@@ -3,8 +3,10 @@
 #pragma once
 
 #include <iostream>
+#include <stdexcept>
 
 #include "mesh.h"
+#include "node.hpp"
 
 class AnalyticScalarField
 {
@@ -22,8 +24,10 @@ public:
 
   virtual void Polygonize(int, Mesh&, const Box&, const double& = 1e-4) const;
 protected:
+  const Node* createVieillissement (const Node& scene) const ;
   static const double Epsilon; //!< Epsilon value for partial derivatives
 protected:
+  int m_n; 
   static int TriangleTable[256][16]; //!< Two dimensionnal array storing the straddling edges for every marching cubes configuration.
   static int edgeTable[256];    //!< Array storing straddling edges for every marching cubes configuration.
 };

@@ -20,7 +20,7 @@ class Surface {
     inline const Vector& pointC(const size_t x, const size_t y) const;
 
 
-    int height, width, numberControlPointH, numberControlPointW;
+    size_t height, width, numberControlPointH, numberControlPointW;
 
 };
 

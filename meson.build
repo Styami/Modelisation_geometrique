@@ -20,8 +20,15 @@ tinymesh_sources = files(
     'AppTinyMesh/Source/ray.cpp',
     'AppTinyMesh/Source/shader-api.cpp',
     'AppTinyMesh/Source/triangle.cpp', 
-    'AppTinyMesh/Source/surface.cpp', 
-    'AppTinyMesh/Source/bezier.cpp', 
+    'AppTinyMesh/Source/surface.cpp',
+    'AppTinyMesh/Source/bezier.cpp',
+    'AppTinyMesh/Source/union.cpp', 
+    'AppTinyMesh/Source/intersect.cpp', 
+    'AppTinyMesh/Source/mix.cpp', 
+    'AppTinyMesh/Source/boite.cpp', 
+    'AppTinyMesh/Source/sphere.cpp', 
+    'AppTinyMesh/Source/tore.cpp', 
+    'AppTinyMesh/Source/capsule.cpp', 
 )
 tinymesh_headers = include_directories('AppTinyMesh/Include')
 

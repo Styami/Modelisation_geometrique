@@ -1,4 +1,16 @@
 #include "implicits.h"
+#include "boite.hpp"
+#include "capsule.hpp"
+#include "intersect.hpp"
+#include "mathematics.h"
+#include "mix.hpp"
+#include "node.hpp"
+#include "sphere.hpp"
+#include "tore.hpp"
+#include "union.hpp"
+#include <cmath>
+#include <iterator>
+#include <random>
 
 const double AnalyticScalarField::Epsilon = 1e-6;
 
@@ -9,13 +21,59 @@ AnalyticScalarField::AnalyticScalarField()
 {
 }
 
+const Node* AnalyticScalarField::createVieillissement (const Node& scene) const {
+  static std::random_device rd;  // Will be used to obtain a seed for the random number engine
+  static std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
+  std::uniform_real_distribution<> dis(- M_PI, M_PI);
+  Node* veillissement;
+  bool findOne = false;
+  
+  for(int i = 0; i < 50; i++) {
+    Vector o(0, 0, -2);
+    float theta = dis(gen);
+    float phi = dis(gen);
+    Vector dir = Normalized(Vector(cos(theta) + sin(theta), cos(phi) * sin(phi), 1));
+    float length = 0;
+    float step = 1;
+    Vector p = o + dir;
+    while (step > 0.0001) {
+      step = scene.value(p);
+      length += step;
+      p = p + dir * step;
+      if(length > 10)
+        break;
+    }
+    if(length > 10)
+      continue;
+    if(!findOne) {
+      findOne = true;
+      veillissement = new Sphere(p, 0.2);
+    } else {
+      Node* tmp = new Union(*veillissement, Sphere(p, 0.2));
+      delete veillissement;
+      veillissement = tmp;
+    }
+  }
+  return veillissement;
+}
+
 /*!
 \brief Compute the value of the field.
 \param p Point.
 */
 double AnalyticScalarField::Value(const Vector& p) const
 {
-  return Norm(p) - 1.0;
+  const Node& scene = Union(
+                          Sphere(Vector(1, 1.5, 1), 0.6),
+                          Mix(
+                            Tore(Vector(-1, -1, -1), Vector(-1, 2, -0.3), 0.5, 2),
+                            Boite(Vector(-0.5, -0.5, -0.5), Vector(0.7, 0.7, 0.7)),
+                            1.5
+                          )
+  );
+  static const Node& veillissement = *createVieillissement(scene);
+  Node* res = new Intersect(scene, veillissement); 
+  return res->value(p);
 }
 
 /*!
@@ -80,7 +138,7 @@ void AnalyticScalarField::Polygonize(int n, Mesh& g, const Box& box, const doubl
     for (int j = nay; j < nby; j++)
     {
       u[i * ny + j] = clipped[0] + Vector(i * d[0], j * d[1], za);
-      a[i * ny + j] = Value(u[i * ny + j]);
+      a[i * ny + j] = Value(Vector(u[i * ny + j]));
     }
   }
 
