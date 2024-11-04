@@ -19,7 +19,7 @@ Mesh deformation_local(const Mesh& mesh, const Vector& center_def, const float r
     for (size_t i = 0; i < verticiesMesh.size(); i++) {
         float distance = Norm(verticiesMesh[i] - center_def) / rayon;
         distance = std::clamp(distance, float(0), float(1));
-        Vector t = Normalized(verticiesMesh[i] - center_def);
+        Vector t = Normalized(verticiesMesh[i] - center_def) * 6;
         Vector new_point = verticiesMesh[i] + (1- distance * distance)*(1- distance * distance) * t;
         new_pos.push_back(new_point);
         new_norm.push_back(Lerp(Normalized(new_point - center_def), normalsMesh[i], 0.5));
@@ -30,47 +30,40 @@ Mesh deformation_local(const Mesh& mesh, const Vector& center_def, const float r
 
 Box transform_box(const Box& box) {
     Box copyBox = box;
-    copyBox.Scale(2.75);
+    copyBox.Scale(0.75);
     return copyBox;
 }
 
 Vector trilinear_interpolation(const Box& box, const Vector& v) {
+    double xd = (v[0] - box[0][0]) / (box[1][0] - box[0][0]);
+    double yd = (v[1] - box[0][1]) / (box[1][1] - box[0][1]);
+    double zd = (v[2] - box[0][2]) / (box[1][2] - box[0][2]);    
 
+    Vector c00 = box.Vertex(0) * (1 - xd) + box.Vertex(1) * xd;
+    Vector c01 = box.Vertex(4) * (1 - xd) + box.Vertex(5) * xd;
+    Vector c10 = box.Vertex(2) * (1 - xd) + box.Vertex(3) * xd;
+    Vector c11 = box.Vertex(6) * (1 - xd) + box.Vertex(7) * xd;
+
+    Vector c0 = c00 * (1 - yd) + c10 * yd;
+    Vector c1 = c01 * (1 - yd) + c11 * yd;
+
+    return c0 * (1 - zd) + c1 * zd;
 }
 
 
-Mesh deformation_forme_libre(const Mesh& mesh, const int n) {
-    Box boite = Box(2.0);
+Mesh deformation_forme_libre(const Mesh& mesh) {
+    Box boite = Box(10.0);
     Box transBox = transform_box(boite);
-    //boite.Translate(Vector(1));
-    transBox.Translate(Vector(1, 0, 0));
+    transBox.Translate(Vector(-5, 0, 0));
     std::vector<Vector> verticies = mesh.get_verticies();
     std::vector<Vector> res;
-    const Vector lowerPointTrans(Mesh(transBox).get_verticies()[0]);
-        const Vector lowerPoint(Mesh(boite).get_verticies()[0]);
-    const Vector upperPointTrans(Mesh(transBox).get_verticies()[7]);
-        const Vector upperPoint(Mesh(boite).get_verticies()[7]);
     res.reserve(verticies.size());
     for(const Vector& vertex : verticies) {
         if(!boite.Inside(vertex)){
             res.push_back(vertex);
             continue;
         }
-        Vector acc(0, 0, 0);
-        for (int x = 0; x < n; x++) {
-            for(int y = 0; y < n; y++) {
-                for (int z = 0; z < n; z++) {
-                    Vector pc = lowerPointTrans + Vector(float(x)/(n - 1), float(y)/(n - 1), float(z)/(n - 1));
-                    Vector vecFromOrCube = vertex - lowerPoint;
-                    float u = std::clamp((vecFromOrCube * Vector::X) / upperPoint[0], double(0), double(1));//std::clamp((pc - lowerPoint) * Vector::X, double(0), double(1)); // upperPoint[0]; //std::clamp((pc - lowerPoint)[0], double(0), double(1));
-                    float v = std::clamp((vecFromOrCube * Vector::Y) / upperPoint[1], double(0), double(1));//std::clamp((pc - lowerPoint) * Vector::Y, double(0), double(1)); // upperPoint[1]; //std::clamp((pc - lowerPoint)[1], double(0), double(1));
-                    float w = std::clamp((vecFromOrCube * Vector::Z) / upperPoint[2], double(0), double(1));//std::clamp((pc - lowerPoint) * Vector::Z, double(0), double(1)); // upperPoint[2]; //std::clamp((pc - lowerPoint)[2], double(0), double(1));
-                    //std::cout << w << std::endl;
-                    acc += bernstein(n, x, u) * bernstein(n, y, v) * bernstein(n, z, w) * pc;
-                }
-            }
-        }
-        res.push_back(acc);
+        res.push_back(trilinear_interpolation(transBox, vertex));
     }
     return Mesh(res, mesh.get_normals(), mesh.VertexIndexes(), mesh.NormalIndexes());
 }
