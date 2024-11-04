@@ -1,4 +1,4 @@
-project('TinyMesh', 'cpp')
+project('TinyMesh', 'cpp', default_options : ['b_sanitize=address'])
 
 qt_moc = import('qt6')
 qt6 = dependency(
@@ -29,6 +29,8 @@ tinymesh_sources = files(
     'AppTinyMesh/Source/sphere.cpp', 
     'AppTinyMesh/Source/tore.cpp', 
     'AppTinyMesh/Source/capsule.cpp', 
+    'AppTinyMesh/Source/difference.cpp', 
+    'AppTinyMesh/Source/binaryExpr.cpp', 
 )
 tinymesh_headers = include_directories('AppTinyMesh/Include')
 

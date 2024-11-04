@@ -24,7 +24,8 @@ public:
 
   virtual void Polygonize(int, Mesh&, const Box&, const double& = 1e-4) const;
 protected:
-  const Node* createVieillissement (const Node& scene) const ;
+  const Node* createVieillissement () ;
+  const Node* scene;
   static const double Epsilon; //!< Epsilon value for partial derivatives
 protected:
   int m_n; 

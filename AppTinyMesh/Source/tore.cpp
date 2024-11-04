@@ -1,5 +1,4 @@
 #include "tore.hpp"
-#include "mathematics.h"
 #include <cmath>
 
 Tore::Tore(const Vector& c, const Vector& n, const double r, const double R) :

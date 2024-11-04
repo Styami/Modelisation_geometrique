@@ -1,5 +1,4 @@
 #include "boite.hpp"
-#include "mathematics.h"
 #include <algorithm>
 
 Boite::Boite(const Vector& a, const Vector& b) :

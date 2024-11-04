@@ -1,6 +1,4 @@
 #include "union.hpp"
-#include "binaryExpr.hpp"
-
 
 Union::Union(const Node& _n1, const Node& _n2) :
     BinaryExpr(_n1.clone(), _n2.clone())

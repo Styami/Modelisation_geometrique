@@ -1,6 +1,7 @@
 #include "implicits.h"
 #include "boite.hpp"
 #include "capsule.hpp"
+#include "difference.hpp"
 #include "intersect.hpp"
 #include "mathematics.h"
 #include "mix.hpp"
@@ -9,7 +10,9 @@
 #include "tore.hpp"
 #include "union.hpp"
 #include <cmath>
+#include <cstddef>
 #include <iterator>
+#include <ostream>
 #include <random>
 
 const double AnalyticScalarField::Epsilon = 1e-6;
@@ -17,41 +20,68 @@ const double AnalyticScalarField::Epsilon = 1e-6;
 /*!
 \brief Constructor.
 */
-AnalyticScalarField::AnalyticScalarField()
+AnalyticScalarField::AnalyticScalarField() :
+  scene(new Union(
+          Union(
+            Sphere(Vector(1, 1.5, 1), 0.6),
+            Mix(
+              Tore(Vector(-1, -1, -1), Vector(0, 0, -0.3), 0.5, 2),
+              Boite(Vector(-0.5, -0.5, -0.5), Vector(0.7, 0.7, 0.7)),
+              1.5
+              )
+            ),
+            Capsule(Vector(-1, -1, -2), Vector(-1, -1, 2), 0.5)
+          )
+        )
 {
+  const Node* vieillissement = createVieillissement();
+  if (vieillissement != nullptr) {
+    const Node* tmp = new Difference(scene, vieillissement); 
+    delete scene;
+    scene = tmp;
+  }
 }
 
-const Node* AnalyticScalarField::createVieillissement (const Node& scene) const {
+const Node* AnalyticScalarField::createVieillissement () {
   static std::random_device rd;  // Will be used to obtain a seed for the random number engine
   static std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
-  std::uniform_real_distribution<> dis(- M_PI, M_PI);
-  Node* veillissement;
-  bool findOne = false;
+  static std::uniform_real_distribution<> dis(- M_PI, M_PI);
+  Node* veillissement = nullptr;
+  int find = 0;
   
-  for(int i = 0; i < 50; i++) {
-    Vector o(0, 0, -2);
+  for(int i = 0; i < 100; i++) {
+    Vector o(0, -3, 0);
     float theta = dis(gen);
     float phi = dis(gen);
-    Vector dir = Normalized(Vector(cos(theta) + sin(theta), cos(phi) * sin(phi), 1));
+    Vector dir = Normalized(Vector(cos(theta) + sin(theta), 1, cos(phi) * sin(phi)));
     float length = 0;
     float step = 1;
     Vector p = o + dir;
-    while (step > 0.0001) {
-      step = scene.value(p);
+    for(int i = 0; i < 5; i++) {
+      step = scene->value(p);
+      if(step < 0)
+        break;
       length += step;
       p = p + dir * step;
-      if(length > 10)
-        break;
     }
-    if(length > 10)
+    if(length > 10 || step > 1) {
       continue;
-    if(!findOne) {
-      findOne = true;
-      veillissement = new Sphere(p, 0.2);
+    } else if(veillissement == nullptr) {
+      find++;
+      veillissement = new Sphere(p, 0.3);
     } else {
-      Node* tmp = new Union(*veillissement, Sphere(p, 0.2));
+      find++;
+      Node* tmp = new Union(*veillissement, Sphere(p, 0.3));
       delete veillissement;
       veillissement = tmp;
+      if(find%5 == 0) {
+        find = 0;
+        tmp = new Difference(scene, veillissement);
+        delete scene;
+        delete veillissement;
+        veillissement = nullptr;
+        scene = tmp;
+      }
     }
   }
   return veillissement;
@@ -63,17 +93,8 @@ const Node* AnalyticScalarField::createVieillissement (const Node& scene) const 
 */
 double AnalyticScalarField::Value(const Vector& p) const
 {
-  const Node& scene = Union(
-                          Sphere(Vector(1, 1.5, 1), 0.6),
-                          Mix(
-                            Tore(Vector(-1, -1, -1), Vector(-1, 2, -0.3), 0.5, 2),
-                            Boite(Vector(-0.5, -0.5, -0.5), Vector(0.7, 0.7, 0.7)),
-                            1.5
-                          )
-  );
-  static const Node& veillissement = *createVieillissement(scene);
-  Node* res = new Intersect(scene, veillissement); 
-  return res->value(p);
+  
+  return scene->value(p);
 }
 
 /*!

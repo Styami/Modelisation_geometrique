@@ -5,20 +5,15 @@
 
 class BinaryExpr : public Node {
     public:
-        virtual ~BinaryExpr() {
-            delete n1;
-            delete n2;
-        }
+        virtual ~BinaryExpr();
+        
     protected:
-        BinaryExpr(const Node& _n1, const Node& _n2) :
-            n1(_n1.clone()),
-            n2(_n2.clone())
-        {}
-        BinaryExpr(const Node* _n1, const Node* _n2) :
-            n1(_n1->clone()),
-            n2(_n2->clone())
-        {}
+        BinaryExpr(const Node& _n1, const Node& _n2);
+        BinaryExpr(const Node* _n1, const Node* _n2);
         Node* n1, * n2;
+
+    private:
+        void remove_all();
 };
 
 #endif

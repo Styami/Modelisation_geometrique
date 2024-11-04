@@ -1,5 +1,4 @@
 #include "capsule.hpp"
-#include "mathematics.h"
 #include <cmath>
 
 Capsule::Capsule(const Vector& a, const Vector& b, const double r) :

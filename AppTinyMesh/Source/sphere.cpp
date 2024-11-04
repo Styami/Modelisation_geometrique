@@ -1,5 +1,4 @@
 #include "sphere.hpp"
-#include "mathematics.h"
 
 Sphere::Sphere(const Vector& _c, const double _r) :
     center(_c),

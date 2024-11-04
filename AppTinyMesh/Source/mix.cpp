@@ -1,7 +1,5 @@
 #include "mix.hpp"
-#include "binaryExpr.hpp"
 #include <algorithm>
-#include <cstdlib>
 
 Mix::Mix(const Node& _n1, const Node& _n2, const double r) :
     BinaryExpr(_n1.clone(), _n2.clone()),
