@@ -1,7 +1,7 @@
 #include "binaryExpr.hpp"
 
 BinaryExpr::~BinaryExpr() {
-            remove_all();
+    remove_all();
 }
 
 BinaryExpr::BinaryExpr(const Node& _n1, const Node& _n2) :
@@ -15,12 +15,6 @@ BinaryExpr::BinaryExpr(const Node* _n1, const Node* _n2) :
 {}
 
 void BinaryExpr::remove_all() {
-    if (typeid(n1).name() == typeid(BinaryExpr).name()) {
-        dynamic_cast<BinaryExpr*>(n1)->remove_all();
-    }
     delete n1;
-    if (typeid(n2).name() == typeid(BinaryExpr).name()) {
-        dynamic_cast<BinaryExpr*>(n2)->remove_all();
-    }
     delete n2;
 }

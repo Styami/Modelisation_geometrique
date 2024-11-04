@@ -23,11 +23,14 @@ const double AnalyticScalarField::Epsilon = 1e-6;
 AnalyticScalarField::AnalyticScalarField() :
   scene(new Union(
           Union(
-            Sphere(Vector(1, 1.5, 1), 0.6),
-            Mix(
-              Tore(Vector(-1, -1, -1), Vector(0, 0, -0.3), 0.5, 2),
-              Boite(Vector(-0.5, -0.5, -1.5), Vector(0.7, 0.7, 0.7)),
-              3.25
+              Intersect(
+                Sphere(Vector(1, 1.5, 1), 0.6),
+                Sphere(Vector(2, 1.5, 1), 1)
+              ),
+              Mix(
+                Tore(Vector(-1, -1, -1), Vector(0, 0, -0.3), 0.5, 2),
+                Boite(Vector(-0.15, -0.5, -1.5), Vector(0.7, 0.7, 0.7)),
+                3.75
               )
             ),
             Capsule(Vector(-1, -1, -2), Vector(-1, -1, 2), 0.5)
@@ -57,9 +60,10 @@ const Node* AnalyticScalarField::createVieillissement () {
     float length = 0;
     float step = 1;
     Vector p = o + dir;
+    //sphère marching
     for(int i = 0; i < 5; i++) {
       step = scene->value(p);
-      if(step < 0)
+      if(step < 0 || length > 10)
         break;
       length += step;
       p = p + dir * step;

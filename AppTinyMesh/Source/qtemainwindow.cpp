@@ -73,7 +73,7 @@ void MainWindow::BoxMeshExample()
 	begin = std::chrono::high_resolution_clock::now();
   	bezMesh = deformation_local(bezMesh, Vector(5, 2, 2), 20);
 	end = std::chrono::high_resolution_clock::now();
-	std::cout << "temps de création de la surface de bézier : " << 
+	std::cout << "temps de la déformation locale : " << 
 			std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count()
 			<< "µs"
 			<< std::endl;
@@ -89,17 +89,25 @@ void MainWindow::BoxMeshExample()
 
 void MainWindow::SphereImplicitExample()
 {
-  AnalyticScalarField implicit;
+	
+	std::chrono::high_resolution_clock::time_point begin = std::chrono::high_resolution_clock::now();
+	AnalyticScalarField implicit;
+	Mesh implicitMesh;
+	implicit.Polygonize(200, implicitMesh, Box(4.0));
+	std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
+	std::cout << "temps de création de la scène : " << 
+		std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count()
+		<< "ms"
+		<< std::endl;
+	std::vector<Color> cols;
 
-  Mesh implicitMesh;
-  implicit.Polygonize(200, implicitMesh, Box(4.0));
-  std::vector<Color> cols;
-  cols.resize(implicitMesh.Vertexes());
-  for (size_t i = 0; i < cols.size(); i++)
-    cols[i] = Color(0.8, 0.8, 0.8);
+	cols.resize(implicitMesh.Vertexes());
 
-  meshColor = MeshColor(implicitMesh, cols, implicitMesh.VertexIndexes());
-  UpdateGeometry();
+	for (size_t i = 0; i < cols.size(); i++)
+		cols[i] = Color(0.8, 0.8, 0.8);
+
+	meshColor = MeshColor(implicitMesh, cols, implicitMesh.VertexIndexes());
+	UpdateGeometry();
 }
 
 void MainWindow::UpdateGeometry()
