@@ -46,8 +46,8 @@ AnalyticScalarField::AnalyticScalarField() :
 }
 
 const Node* AnalyticScalarField::createVieillissement () {
-  static std::random_device rd;  // Will be used to obtain a seed for the random number engine
-  static std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
+  static std::random_device rd;
+  static std::mt19937 gen(rd());
   static std::uniform_real_distribution<> dis(- M_PI, M_PI);
   Node* veillissement = nullptr;
   int find = 0;
