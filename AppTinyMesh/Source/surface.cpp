@@ -11,13 +11,13 @@ Surface::Surface(int h, int w, int numPCH, int numPCW) :
     numberControlPointH(numPCH),
     numberControlPointW(numPCW)
 {
-    pointsControls = {Vector{0, 10, 0}, Vector{10, -10, 0}, Vector{20, 20, 0}, Vector{30, -30, 0}, Vector{40, 40, 0}, Vector{50, 0, 0}, Vector{50, 0, 0},
-                      Vector{0, -20, 10}, Vector{10, 10, 10}, Vector{20, -20, 10}, Vector{30, 30, 10}, Vector{40, -40, 10}, Vector{60, 40, 20}, Vector{40, 40, 30},
+    pointsControls = {Vector{-10, 10, 0}, Vector{10, -10, 0}, Vector{20, 20, 0}, Vector{30, 0, 0}, Vector{40, 40, 0}, Vector{50, 0, 0}, Vector{60, 0, 0},
+                      Vector{0, -20, 10}, Vector{10, 10, 10}, Vector{20, 20, 10}, Vector{30, 30, 10}, Vector{40, -40, 10}, Vector{60, 40, 20}, Vector{40, 40, 30},
                       Vector{0, 30, 20}, Vector{10, -10, 20}, Vector{20, 20, 20}, Vector{30, -30, 20}, Vector{40, -40, 20}, Vector{50, 20, 20}, Vector{40, 0, 20},
                       Vector{0, -40, 30}, Vector{10, 10, 30}, Vector{20, -20, 30}, Vector{30, 30, 30}, Vector{40, 40, 30}, Vector{0, 0, 0}, Vector{-10, 0, 0},
                       Vector{0, 50, 40}, Vector{10, -10, 40}, Vector{20, 20, 40}, Vector{30, -30, 40}, Vector{40, -40, 40}, Vector{10, 0, 20}, Vector{0, 0, 10}, 
                       Vector{50, 50, 0}, Vector{40, 50, 40}, Vector{30, 50, 40}, Vector{20, 50, 40}, Vector{10, 50, 40}, Vector{0, 50, 40}, Vector{0, 50, 40}, 
-                      Vector{60, 50, 0}, Vector{10, -10, 40}, Vector{20, 20, 40}, Vector{30, -30, 40}, Vector{40, -40, 40},  Vector{60, 0, 0}, Vector{100, 0, 0}
+                      Vector{40, 50, 70}, Vector{10, -10, 40}, Vector{20, 20, 40}, Vector{30, -30, 40}, Vector{40, -40, 40},  Vector{60, 0, 0}, Vector{100, 0, 0}
     };
 
 }

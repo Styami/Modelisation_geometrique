@@ -4,6 +4,7 @@
 #include "qte.h"
 #include "implicits.h"
 #include "ui_interface.h"
+#include <chrono>
 
 MainWindow::MainWindow() : QMainWindow(), uiw(new Ui::Assets)
 {
@@ -61,11 +62,22 @@ void MainWindow::editingSceneRight(const Ray&)
 
 void MainWindow::BoxMeshExample()
 {
-	// Mesh boxMesh = Mesh(Box(1.0));
+	std::chrono::high_resolution_clock::time_point begin = std::chrono::high_resolution_clock::now();
 	Bezier bez(100, 100, 7, 7); //FIXME : Faire en sorte que le fonction soit templatée pour les points de contrôles
+	std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
+	std::cout << "temps de création de la surface de bézier : " << 
+				std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count()
+				<< "µs"
+				<< std::endl;
 	Mesh bezMesh = Mesh(bez.get_mesh());
-  	//bezMesh = deformation_local(bezMesh, Vector(5, 2, -1), 5);
-	//bezMesh = deformation_forme_libre(bezMesh, 10);
+	begin = std::chrono::high_resolution_clock::now();
+  	bezMesh = deformation_local(bezMesh, Vector(5, 2, 2), 20);
+	end = std::chrono::high_resolution_clock::now();
+	std::cout << "temps de création de la surface de bézier : " << 
+			std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count()
+			<< "µs"
+			<< std::endl;
+	bezMesh = deformation_forme_libre(bezMesh);
 	std::vector<Color> cols(bezMesh.Vertexes());
 	// cols.resize(bezMesh.Vertexes());//boxMesh.Vertexes());
     for (size_t i = 0; i < cols.size(); i++)
@@ -80,10 +92,7 @@ void MainWindow::SphereImplicitExample()
   AnalyticScalarField implicit;
 
   Mesh implicitMesh;
-  implicit.Polygonize(50, implicitMesh, Box(3.0));
-  //implicitMesh = deformation_local(implicitMesh, Vector(0.75, 0, 0), 0.5);
-  //implicitMesh = deformation_forme_libre(implicitMesh, 10);
-	//implicitMesh = deformation_forme_libre(implicitMesh, 4);
+  implicit.Polygonize(200, implicitMesh, Box(4.0));
   std::vector<Color> cols;
   cols.resize(implicitMesh.Vertexes());
   for (size_t i = 0; i < cols.size(); i++)

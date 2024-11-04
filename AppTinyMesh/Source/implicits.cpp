@@ -26,8 +26,8 @@ AnalyticScalarField::AnalyticScalarField() :
             Sphere(Vector(1, 1.5, 1), 0.6),
             Mix(
               Tore(Vector(-1, -1, -1), Vector(0, 0, -0.3), 0.5, 2),
-              Boite(Vector(-0.5, -0.5, -0.5), Vector(0.7, 0.7, 0.7)),
-              1.5
+              Boite(Vector(-0.5, -0.5, -1.5), Vector(0.7, 0.7, 0.7)),
+              3.25
               )
             ),
             Capsule(Vector(-1, -1, -2), Vector(-1, -1, 2), 0.5)

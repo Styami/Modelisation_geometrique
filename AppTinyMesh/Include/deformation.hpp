@@ -31,10 +31,12 @@ Mesh deformation_local(const Mesh& mesh, const Vector& center_def, const float r
 Box transform_box(const Box& box) {
     Box copyBox = box;
     copyBox.Scale(0.75);
+    copyBox.Translate(Vector(-50, 0, 0));
     return copyBox;
 }
 
 Vector trilinear_interpolation(const Box& box, const Vector& v) {
+    // source : https://en.wikipedia.org/wiki/Trilinear_interpolation
     double xd = (v[0] - box[0][0]) / (box[1][0] - box[0][0]);
     double yd = (v[1] - box[0][1]) / (box[1][1] - box[0][1]);
     double zd = (v[2] - box[0][2]) / (box[1][2] - box[0][2]);    
@@ -52,9 +54,8 @@ Vector trilinear_interpolation(const Box& box, const Vector& v) {
 
 
 Mesh deformation_forme_libre(const Mesh& mesh) {
-    Box boite = Box(10.0);
+    Box boite = Box(Vector(-1), Vector(30));
     Box transBox = transform_box(boite);
-    transBox.Translate(Vector(-5, 0, 0));
     std::vector<Vector> verticies = mesh.get_verticies();
     std::vector<Vector> res;
     res.reserve(verticies.size());
