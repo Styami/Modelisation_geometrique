@@ -6,19 +6,26 @@
 #include "mathematics.h"
 #include "mesh.h"
 #include <algorithm>
+#include <cstddef>
 #include <vector>
 
 Mesh deformation_local(const Mesh& mesh, const Vector& center_def, const float rayon) {
     std::vector<Vector> new_pos;
+    std::vector<Vector> new_norm;
+    const std::vector<Vector>& normalsMesh = mesh.get_normals();
+    const std::vector<Vector>& verticiesMesh = mesh.get_verticies();
+    new_norm .reserve(mesh.get_normals().size());
     new_pos.reserve(mesh.get_verticies().size());
-    for (const Vector& v : mesh.get_verticies()) {
-        float distance = Norm(v - center_def) / rayon;
+    for (size_t i = 0; i < verticiesMesh.size(); i++) {
+        float distance = Norm(verticiesMesh[i] - center_def) / rayon;
         distance = std::clamp(distance, float(0), float(1));
-        Vector t = Normalized(v - center_def);
-        Vector new_point = v + (1- distance * distance)*(1- distance * distance) * t;
+        Vector t = Normalized(verticiesMesh[i] - center_def);
+        Vector new_point = verticiesMesh[i] + (1- distance * distance)*(1- distance * distance) * t;
         new_pos.push_back(new_point);
+        new_norm.push_back(Lerp(Normalized(new_point - center_def), normalsMesh[i], 0.5));
+
     }
-    return Mesh(new_pos, mesh.get_normals(), mesh.VertexIndexes(), mesh.NormalIndexes());
+    return Mesh(new_pos, new_norm, mesh.VertexIndexes(), mesh.NormalIndexes());
 }
 
 Box transform_box(const Box& box) {
